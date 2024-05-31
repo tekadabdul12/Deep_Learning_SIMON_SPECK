@@ -1,5 +1,6 @@
 from __future__ import print_function
 from collections import deque
+import csv
 
 __author__ = 'inmcm'
 
@@ -349,18 +350,21 @@ class SimonCipher(object):
     #generate Round (spesific round)
     def hasilround(self,param,round = None):
         a = 1
+        listx = []
 
         if param == True:
             #print('cipher for round', round, )
             print(listy[round]) #spesific round
+            listx.append(listy[round])
         elif param == False:
             print("round enkripsi :") #all round
             for i in listy:
                 print(a, i)
+                listx[a] = i
                 a += 1
 
-
         #print(listy)
+        return listx
 
     def decrypt_function(self, upper_word, lower_word):
         """
@@ -412,25 +416,78 @@ class SimonCipher(object):
 
 if __name__ == "__main__":
     # data = [0x1918111009080100]
-    data = [0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A,
-    0x4B, 0x4C, 0x4D, 0x4E, 0x4F, 0x50, 0x51, 0x52, 0x53, 0x54,
-    0x55, 0x56, 0x57, 0x58, 0x59, 0x5A]
+
+    data = []
+
+    # Membaca file CSV
+    with open('input.csv', mode='r', newline='') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            data.append(row["Plaintext"])  # Menambahkan elemen kolom "Nama" ke list
+
+    print("Plaintext:", data)
+
+
+    ##buat data CSV
+    # data = [0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A,
+    # 0x4B, 0x4C, 0x4D, 0x4E, 0x4F, 0x50, 0x51, 0x52, 0x53, 0x54,
+    # 0x55, 0x56, 0x57, 0x58, 0x59, 0x5A]
+    #
+    # data_as_hex = [hex(x) for x in data]
+    #
+    # with open('input.csv', mode='w', newline='') as file:
+    #     writer = csv.writer(file)
+    #     writer.writerow(["Plaintext"])
+    #
+    #     # Jika ingin menulis sebagai satu kolom
+    #     for value in data_as_hex:
+    #         writer.writerow([value])
 
     #to active show all key go to line 124
     #example use
-    # w = SimonCipher(0x1918111009080100, key_size=64, block_size=32)
-    # t = w.encrypt(0x65656877)
+    # w = SimonCipher(0x1918111009080100, key_size=64, block_size=32) # key
+    # t = w.encrypt(0x65656877)       #data
     # print("Final Cipher:",hex(t))
-    # w.hasilround(True,1)    #choose, True,"number round" = show spesific round (check top for spesific round),
+    # result = w.hasilround(False,0)    #choose, True,"number round" = show spesific round (check top for spesific round),
     #                         # False = all round
     # #print("dekrip round :")
     # #d = w.decrypt(0xc69be9bb)
+    #
+    # converted_data = [{"Round": k, "Cipher": v} for k, v in result.items()]
+    #
+    # #save CSV
+    # with open('output_simon.csv', mode='w', newline='') as file:
+    #     fieldnames = ["Round", "Cipher"]
+    #     writer = csv.DictWriter(file, fieldnames=fieldnames)
+    #
+    #     writer.writeheader()  # Menulis header
+    #     writer.writerows(converted_data)
+
 
     #Here
-    for i in data:
-        w = SimonCipher(0x4142434445464748, key_size=64, block_size=32)
-        t = w.encrypt(i)
+    # for i in data:
+    #     # print("\n",i)
+    #     w = SimonCipher(0x1918111009080100, key_size=64, block_size=32)
+    #     t = w.encrypt((int(i,16)))
+    #     # print(hex(t))
 
-        w.hasilround(True,0) #index start from 0---- remember : want_round - 1
+
+        #save CSV
+    with open('output_simon.csv', mode='w', newline='') as file:
+            writer = csv.writer(file)
+
+            writer.writerow(['cipher'])
+
+            # writer.writeheader()  # Menulis
+            for i in data:
+                # print("\n",i)
+                w = SimonCipher(0x1918111009080100, key_size=64, block_size=32)
+                t = w.encrypt((int(i, 16))) #round final
+                round = w.hasilround(True,0) #round pilihan
+                # print(round[0])
+                writer.writerow([round[0]])
+
+
+        # w.hasilround(False,0) #index start from 0---- remember : want_round - 1
         #print("dekrip round :")
         #d = w.decrypt(0xc69be9bb)

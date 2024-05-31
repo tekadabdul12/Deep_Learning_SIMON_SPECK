@@ -50,7 +50,7 @@ def objective(params):
     print(smallest_index, smallest_value)
     print(data_loss)
 
-    print(history)
+    print('tes',history)
     return {'loss': smallest_value, 'status': 'ok', 'params':params}
 
 # 5. Jalankan Bayesian optimizer

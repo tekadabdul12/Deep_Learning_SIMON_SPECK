@@ -1,4 +1,5 @@
 from __future__ import print_function
+import csv
 
 
 class SpeckCipher(object):
@@ -274,7 +275,7 @@ class SpeckCipher(object):
             y = x ^ ls_y
 
             z = str(hex(x)[2:]) + str(hex(y)[2:])
-            print(a ,z)
+            # print(a ,z) #on for see all round
             a +=1
 
         return x, y
@@ -317,11 +318,36 @@ class SpeckCipher(object):
 
 
 if __name__ == "__main__":
-    cipher = SpeckCipher(0x1918111009080100, 64, 32, 'ECB')
-    g = cipher.encrypt(0x6574694c)
-    print("\ndekripsi\n")
-    d = cipher.decrypt(0xa86842f2)
-    print("\nEnkripsi")
-    print(hex(g))
-    print("Deksripsi")
-    print(hex(d))
+
+    #to show all round see line 278
+
+    data = []
+    # Membaca file CSV
+    with open('input.csv', mode='r', newline='') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            data.append(row["Plaintext"])  # Menambahkan elemen kolom "Nama" ke list
+
+    print("Plaintext:", data)
+    # cipher = SpeckCipher(0x1918111009080100, 64, 32, 'ECB')
+    # g = cipher.encrypt(0x6574694c)
+    # print("\ndekripsi\n")
+    # d = cipher.decrypt(0xa86842f2)
+    # print("\nEnkripsi")
+    # print(hex(g))
+    # print("Deksripsi")
+    # print(hex(d))
+
+    with open('output_speck.csv', mode='w', newline='') as file:
+        writer = csv.writer(file)
+
+        writer.writerow(['cipher'])
+        for i in data:
+            # print("\n", i)
+            cipher = SpeckCipher(0x1918111009080100, 64, 32, 'ECB') #key
+            g = cipher.encrypt(int(i,16)) #encrypt
+            #print(hex(g))
+            writer.writerow([hex(g)])
+
+
+

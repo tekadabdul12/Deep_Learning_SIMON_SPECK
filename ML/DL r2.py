@@ -2,20 +2,34 @@ import numpy as np
 from tensorflow import keras
 from tensorflow.keras.callbacks import EarlyStopping
 from hyperopt import fmin, tpe, hp, Trials
+import csv
 
 # 1. Siapkan dataset
 # x = np.array([1,2,3,4,5])
 # y = np.array([3,6,9,12,15])
 
+data = []
+with open('../output_simon.csv', mode='r', newline='') as file:
+    reader = csv.DictReader(file)
+    for row in reader:
+        data.append(row["cipher"])  # Menambahkan elemen kolom "Nama" ke list
+
+data = [int(x, 16) for x in data]
+
+
+
+data_input = []
+with open('../input.csv', mode='r', newline='') as file:
+    reader = csv.DictReader(file)
+    for row in reader:
+        data_input.append(row["Plaintext"])  # Menambahkan elemen kolom "Nama" ke list
+
+data_input = [int(x, 16) for x in data_input]
+
 y = np.array([0x0908,0x0908]) #output
 
-x = np.array([[0xc0c141, 0xe00142, 0xe04143, 0xc18144, 0xc1c145, 0xe10146, 0xe14147,
-               0xc28148, 0xc2c149, 0xe2014a, 0xe2414b, 0xc3814c, 0xc3c14d, 0xe3014e,
-               0xe3414f, 0xc48150, 0xc4c151, 0xe40152, 0xe44153, 0xc58154, 0xc5c155,
-               0xe50156, 0xe54157, 0xc68158, 0xc6c159, 0xe6015a],
-              [0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A,
-                0x4B, 0x4C, 0x4D, 0x4E, 0x4F, 0x50, 0x51, 0x52, 0x53, 0x54,
-                0x55, 0x56, 0x57, 0x58, 0x59, 0x5A]])
+x = np.array([data,
+              data_input])
 
 # 2. Buat model
 def create_model(params):
