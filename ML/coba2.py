@@ -6,12 +6,20 @@ import csv
 #
 # print(smallest_value,smallest_index)
 
-data_input = []
-with open('../input.csv', mode='r', newline='') as file:
-    reader = csv.DictReader(file)
-    for row in reader:
-        data_input.append(row["Plaintext"])  # Menambahkan elemen kolom "Nama" ke list
+import pandas as pd
 
-data_input = [int(x, 16) for x in data_input]
+# Membaca file CSV menggunakan pandas
+df = pd.read_csv('../output_simon.csv')
 
-print(data_input)
+# Mengakses kolom yang diperlukan
+plaintexts = df['plaintext'].tolist()
+ciphers = df['cipher'].tolist()
+keys = df['key'].tolist()[:2]
+
+# Mengonversi plaintext dari format heksadesimal ke integer
+plaintexts = [int(x, 16) for x in plaintexts]
+
+# Membuat list tuples (plaintext, cipher, key)
+# data = list(zip(plaintexts_int, ciphers, keys))
+
+print("tes" + str(2))

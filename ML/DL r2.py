@@ -3,33 +3,29 @@ from tensorflow import keras
 from tensorflow.keras.callbacks import EarlyStopping
 from hyperopt import fmin, tpe, hp, Trials
 import csv
+import pandas as pd
 
 # 1. Siapkan dataset
 # x = np.array([1,2,3,4,5])
 # y = np.array([3,6,9,12,15])
 
-data = []
-with open('../output_simon.csv', mode='r', newline='') as file:
-    reader = csv.DictReader(file)
-    for row in reader:
-        data.append(row["cipher"])  # Menambahkan elemen kolom "Nama" ke list
+# Membaca file CSV menggunakan pandas
+df = pd.read_csv('../output_simon1.csv')
 
-data = [int(x, 16) for x in data]
+# Mengakses kolom yang diperlukan
+plaintexts = df['plaintext'].tolist()[:26]
+ciphers = df['cipher'].tolist()[:26]
+keys = df['key'].tolist()[:2]
+
+plaintexts = [int(x, 16) for x in plaintexts]
+ciphers = [int(x, 16) for x in ciphers]
+keys = [int(x, 16) for x in keys]
 
 
+y = np.array(keys) #output
 
-data_input = []
-with open('../input.csv', mode='r', newline='') as file:
-    reader = csv.DictReader(file)
-    for row in reader:
-        data_input.append(row["Plaintext"])  # Menambahkan elemen kolom "Nama" ke list
-
-data_input = [int(x, 16) for x in data_input]
-
-y = np.array([0x0908,0x0908]) #output
-
-x = np.array([data,
-              data_input])
+x = np.array([ciphers,
+              plaintexts])
 
 # 2. Buat model
 def create_model(params):

@@ -123,13 +123,14 @@ class SimonCipher(object):
             k_reg.appendleft(new_k)
 
         #generate All Key
-        # keyall = self.key_schedule
-        # print("AlL Round Key")
-        # i = 1
-        # for x in keyall:
-        #     print(i,'.',hex(x))
-        #     i+=1
-        # print('')
+        global keyall
+        keyall = self.key_schedule
+        print("AlL Round Key")
+        i = 1
+        for x in keyall:
+            print(i,'.',hex(x))
+            i+=1
+        print('')
 
     def encrypt_round(self, x, y, k):
         """
@@ -472,20 +473,20 @@ if __name__ == "__main__":
     #     # print(hex(t))
 
 
-        #save CSV
-    with open('output_simon.csv', mode='w', newline='') as file:
-            writer = csv.writer(file)
+    #save CSV
+    for j in range(2):
+        with open('output_simon'+str(j)+'.csv', mode='w', newline='') as file:
+                writer = csv.writer(file)
 
-            writer.writerow(['cipher'])
+                writer.writerow(['plaintext','cipher','key'])
 
-            # writer.writeheader()  # Menulis
-            for i in data:
-                # print("\n",i)
-                w = SimonCipher(0x1918111009080100, key_size=64, block_size=32)
-                t = w.encrypt((int(i, 16))) #round final
-                round = w.hasilround(True,0) #round pilihan
-                # print(round[0])
-                writer.writerow([round[0]])
+                # writer.writeheader()  # Menulis
+                for i , value in enumerate(data):
+                    # print("\n",i)
+                    w = SimonCipher(0x1918111009080100, key_size=64, block_size=32)
+                    t = w.encrypt((int(value, 16))) #round final
+                    round = w.hasilround(True,j) #round pilihan
+                    writer.writerow([value,round[0],hex(keyall[j])])
 
 
         # w.hasilround(False,0) #index start from 0---- remember : want_round - 1
