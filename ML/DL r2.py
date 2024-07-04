@@ -13,8 +13,8 @@ import pandas as pd
 df = pd.read_csv('../output_simon1.csv')
 
 # Mengakses kolom yang diperlukan
-plaintexts = df['plaintext'].tolist()[:26]
-ciphers = df['cipher'].tolist()[:26]
+plaintexts = df['plaintext'].tolist()[:7]
+ciphers = df['cipher'].tolist()[:7]
 keys = df['key'].tolist()[:2]
 
 plaintexts = [int(x, 16) for x in plaintexts]
@@ -30,7 +30,7 @@ x = np.array([ciphers,
 # 2. Buat model
 def create_model(params):
     model = keras.Sequential()
-    model.add(keras.layers.Dense(params['units'][0], input_dim=26, activation=params['activation']))
+    model.add(keras.layers.Dense(params['units'][0], input_dim=6, activation=params['activation']))
     for i in range(1, params['num_layers']):
         model.add(keras.layers.Dense(params['units'][i], activation=params['activation']))
     model.add(keras.layers.Dense(1))

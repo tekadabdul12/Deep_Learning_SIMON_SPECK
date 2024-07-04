@@ -123,6 +123,16 @@ class SpeckCipher(object):
             l_schedule.append(new_l_k[0])
             self.key_schedule.append(new_l_k[1])
 
+        # generate All Key
+        global keyall
+        keyall = self.key_schedule
+        print("AlL Round Key")
+        i = 1
+        for x in keyall:
+            print(i, '.', hex(x))
+            i += 1
+        print('')
+
     def encrypt(self, plaintext):
         try:
             b = (plaintext >> self.word_size) & self.mod_mask
@@ -261,6 +271,8 @@ class SpeckCipher(object):
         x = upper_word
         y = lower_word
         a = 1
+        global listy
+        listy = []
 
         # Run Encryption Steps For Appropriate Number of Rounds
         for k in self.key_schedule:
@@ -275,10 +287,31 @@ class SpeckCipher(object):
             y = x ^ ls_y
 
             z = str(hex(x)[2:]) + str(hex(y)[2:])
-            # print(a ,z) #on for see all round
+            print(a ,z) #on for see all round
             a +=1
+            listy.append(z)
+
 
         return x, y
+
+        # generate Round (spesific round)
+    def hasilround(self, param, round=None):
+        a = 1
+        listx = []
+
+        if param == True:
+            # print('cipher for round', round, )
+            print(listy[round])  # spesific round
+            listx.append(listy[round])
+        elif param == False:
+            print("round enkripsi :")  # all round
+            for i in listy:
+                print(a, i)
+                listx[a] = i
+                a += 1
+
+        # print(listy)
+        return listx
 
     def decrypt_function(self, upper_word, lower_word):
 
@@ -338,16 +371,19 @@ if __name__ == "__main__":
     # print("Deksripsi")
     # print(hex(d))
 
-    with open('output_speck.csv', mode='w', newline='') as file:
-        writer = csv.writer(file)
+    for j in range(5):
+        with open('output_speck' + str(j) + '.csv', mode='w', newline='') as file:
+            writer = csv.writer(file)
 
-        writer.writerow(['cipher'])
-        for i in data:
-            # print("\n", i)
-            cipher = SpeckCipher(0x1918111009080100, 64, 32, 'ECB') #key
-            g = cipher.encrypt(int(i,16)) #encrypt
-            #print(hex(g))
-            writer.writerow([hex(g)])
+            writer.writerow(['plaintext', 'cipher', 'key'])
+
+            # writer.writeheader()  # Menulis
+            for i, value in enumerate(data):
+                # print("\n",i)
+                w = SpeckCipher(0x1918111009080100, key_size=64, block_size=32)
+                t = w.encrypt((int(value, 16)))  # round final
+                round = w.hasilround(True, j)  # round pilihan
+                writer.writerow([value, round[0], hex(keyall[j])])
 
 
 

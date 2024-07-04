@@ -474,7 +474,7 @@ if __name__ == "__main__":
 
 
     #save CSV
-    for j in range(2):
+    for j in range(5):
         with open('output_simon'+str(j)+'.csv', mode='w', newline='') as file:
                 writer = csv.writer(file)
 
